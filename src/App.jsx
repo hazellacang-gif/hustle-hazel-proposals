@@ -35,7 +35,7 @@ const BUDGETS = [
 const SIZES = ["Solo / Freelancer","Small (2–10 employees)","Medium (11–50 employees)","Large (50+ employees)"];
 
 async function callClaude(prompt) {
-  const res = await fetch("/api/generate", {
+  const res = await fetch("https://hustle-hazel-api.hazelmarrefaith.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -44,8 +44,8 @@ async function callClaude(prompt) {
       messages: [{ role: "user", content: prompt }]
     })
   });
-  if (!res.ok) throw new Error("API error " + res.status);
   const data = await res.json();
+  if (!res.ok) throw new Error("API error " + res.status + ": " + JSON.stringify(data.details || data.error || data));
   let text = data.content.map(b => b.type === "text" ? b.text : "").join("");
   // Strip any accidental code fences or html wrapper the AI might add
   text = text.replace(/^```html\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/gi, "").trim();
